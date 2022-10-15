@@ -96,24 +96,6 @@ def EliminarUsuario():
         indice = BuscarIndex(numero)
         ListaUsuarios.pop(indice)
      
-
-def CrearTarjeta(usuario):
-    print("Elija Nivel Tarjeta:\n\
-         1-Platinum\n\
-         2-Gold\n\
-         3-Plata\n")
-    tipo = TipoTarjeta(int(input()))
-    if tipo == TipoTarjeta.Platinum:
-        tarjeta = Platinum(dt.date.today(), usuario)
-        tarjeta.Setnumero(ValidarNumero(GenerarNumero())
-        
-    elif tipo == TipoTarjeta.Gold:
-        tarjeta = Gold(dt.date,usuario)
-        tarjeta.Setnumero(ValidarNumero(GenerarNumero()))
-    elif tipo == TipoTarjeta.Plata:
-        tarjeta = Plata(dt.date, usuario)
-        tarjeta.Setnumero(ValidarNumero(GenerarNumero()))
-
 def GenerarNumero():
     nuevonumero = str(rnd.randint(0,9))
     for x in range(11):
@@ -126,6 +108,24 @@ def ValidarNumero(numero):
                 ValidarNumero(GenerarNumero())
     return numero
 
+def CrearTarjeta(usuario):
+    print("Elija Nivel Tarjeta:\n\
+         1-Platinum\n\
+         2-Gold\n\
+         3-Plata\n")
+    tipo = TipoTarjeta(int(input()))
+    if tipo == TipoTarjeta.Platinum:
+        tarjeta = Platinum(dt.date.today(), usuario)
+        tarjeta.Setnumero(ValidarNumero(GenerarNumero()))    
+    elif tipo == TipoTarjeta.Gold:
+        tarjeta = Gold(dt.date,usuario)
+        tarjeta.Setnumero(ValidarNumero(GenerarNumero()))
+    elif tipo == TipoTarjeta.Plata:
+        tarjeta = Plata(dt.date, usuario)
+        tarjeta.Setnumero(ValidarNumero(GenerarNumero()))
+    return tarjeta
+
+
 def ModificarLimite(numero):
     print("Ingrese Nuevo Limite de Pesos:\n")
     print("(0 para no modificar)")
@@ -135,15 +135,21 @@ def ModificarLimite(numero):
     dolares = float(input())
     for tarjeta in ListaTarjetas:
         if tarjeta.numero == numero:
-            tarjeta.ModificaLimite(pesos, dolares)
+            tarjeta.ModificarLimite(pesos, dolares)
 
 
-def EliminarTarjeta():
-    pass
+def EliminarTarjeta(numero):
+    for tarjeta in ListaTarjetas:
+        if tarjeta.numero == numero:
+            if tarjeta.AcumuladoPesos == 0 & tarjeta.AcumuladoDolares == 0:
+                ListaTarjetas.pop(ListaTarjetas.index(tarjeta))
 
-ListaTarjetas.append(CrearTarjeta(ListaUsuarios[0]))
+nuevatarjeta = CrearTarjeta(ListaUsuarios[0])
+ListaTarjetas.append(nuevatarjeta)
 
-ModificarLimite(ListaTarjetas[0])
-
+print(ListaTarjetas[0].limitePesos)
+ModificarLimite(ListaTarjetas[0].numero)
+print(ListaTarjetas[0].limitePesos)
+EliminarTarjeta(ListaTarjetas[0].numero)
 for x in ListaUsuarios:
     print(x)

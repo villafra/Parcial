@@ -58,6 +58,12 @@ class Platinum(Tarjeta):
     def SetLimites(self):
         self.limitePesos = 1000000
         self.limiteDolares = 10000
+    def PagarSaldoPeso(self, cantidad):
+        cantidad -= cantidad*0.1
+        return super().PagarSaldoPeso(cantidad)
+    def PagarSaldoDolar(self, cantidad):
+        cantidad -= cantidad*0.01
+        return super().PagarSaldoDolar(cantidad)
 
 class Gold(Tarjeta):
     def __init__(self, fechaotorga, titular):
@@ -69,6 +75,12 @@ class Gold(Tarjeta):
     def SetLimites(self):
         self.limitePesos = 750000
         self.limiteDolares = 7500
+    def PagarSaldoPeso(self, cantidad):
+        cantidad -= cantidad*0.2
+        return super().PagarSaldoPeso(cantidad)
+    def PagarSaldoDolar(self, cantidad):
+        cantidad -= cantidad*0.02
+        return super().PagarSaldoDolar(cantidad)
 
 class Plata(Tarjeta):
     def __init__(self, fechaotorga, titular):
@@ -80,6 +92,12 @@ class Plata(Tarjeta):
     def SetLimites(self):
         self.limitePesos = 500000
         self.limiteDolares = 5000
+    def PagarSaldoPeso(self, cantidad):
+        cantidad -= cantidad*0.3
+        return super().PagarSaldoPeso(cantidad)
+    def PagarSaldoDolar(self, cantidad):
+        cantidad -= cantidad*0.03
+        return super().PagarSaldoDolar(cantidad)
 
 class TipoID(Enum):
     DNI = 1
