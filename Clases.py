@@ -32,6 +32,11 @@ class Tarjeta:
         return self.AcumuladoPesos + cantidad <= self.limitePesos
     def VerificarSaldoDolar(self, cantidad):
         return self.AcumuladoDolares + cantidad <= self.limiteDolares
+    def ModificarLimite(self, cantidadpesos=0, cantidaddolares=0):
+        if cantidadpesos != 0:
+            self.limitePesos = cantidadpesos
+        if cantidaddolares != 0:
+            self.limiteDolares = cantidaddolares
 
     numero = 0
     AcumuladoPesos = 0

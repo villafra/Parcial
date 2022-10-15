@@ -105,7 +105,7 @@ def CrearTarjeta(usuario):
     tipo = TipoTarjeta(int(input()))
     if tipo == TipoTarjeta.Platinum:
         tarjeta = Platinum(dt.date.today(), usuario)
-        tarjeta.Setnumero(ValidarNumero(GenerarNumero()))
+        tarjeta.Setnumero(ValidarNumero(GenerarNumero())
         
     elif tipo == TipoTarjeta.Gold:
         tarjeta = Gold(dt.date,usuario)
@@ -126,9 +126,24 @@ def ValidarNumero(numero):
                 ValidarNumero(GenerarNumero())
     return numero
 
+def ModificarLimite(numero):
+    print("Ingrese Nuevo Limite de Pesos:\n")
+    print("(0 para no modificar)")
+    pesos = float(input())
+    print("Ingrese Nuevo Limite de Dolares:\n")
+    print("(0 para no modificar)")
+    dolares = float(input())
+    for tarjeta in ListaTarjetas:
+        if tarjeta.numero == numero:
+            tarjeta.ModificaLimite(pesos, dolares)
 
 
-CrearTarjeta(ListaUsuarios[0])
+def EliminarTarjeta():
+    pass
+
+ListaTarjetas.append(CrearTarjeta(ListaUsuarios[0]))
+
+ModificarLimite(ListaTarjetas[0])
 
 for x in ListaUsuarios:
     print(x)
