@@ -37,6 +37,10 @@ class Tarjeta:
             self.limitePesos = cantidadpesos
         if cantidaddolares != 0:
             self.limiteDolares = cantidaddolares
+    def DevolverSaldoPesos(self, cantidad):
+        return cantidad
+    def DevolverSaldoDolares(self, cantidad):
+        return cantidad
     def __str__(self):
         return f"{self.__class__.__name__}" 
 
@@ -66,6 +70,13 @@ class Platinum(Tarjeta):
     def PagarSaldoDolar(self, cantidad):
         cantidad -= cantidad*0.01
         return super().PagarSaldoDolar(cantidad)
+    def DevolverSaldoPesos(self, cantidad):
+        cantidad += cantidad*0.1
+        return super().DevolverSaldoPesos(cantidad)
+    def DevolverSaldoDolares(self, cantidad):
+        cantidad += cantidad*0.01
+        return super().DevolverSaldoDolares(cantidad)
+
 
 class Gold(Tarjeta):
     def __init__(self, fechaotorga, titular):
@@ -83,6 +94,14 @@ class Gold(Tarjeta):
     def PagarSaldoDolar(self, cantidad):
         cantidad -= cantidad*0.02
         return super().PagarSaldoDolar(cantidad)
+    def DevolverSaldoPesos(self, cantidad):
+        cantidad += cantidad*0.2
+        return super().DevolverSaldoPesos(cantidad)
+    def DevolverSaldoDolares(self, cantidad):
+        cantidad += cantidad*0.02
+        return super().DevolverSaldoDolares(cantidad)
+
+
 
 class Plata(Tarjeta):
     def __init__(self, fechaotorga, titular):
@@ -100,6 +119,14 @@ class Plata(Tarjeta):
     def PagarSaldoDolar(self, cantidad):
         cantidad -= cantidad*0.03
         return super().PagarSaldoDolar(cantidad)
+    def DevolverSaldoPesos(self, cantidad):
+        cantidad += cantidad*0.3
+        return super().DevolverSaldoPesos(cantidad)
+    def DevolverSaldoDolares(self, cantidad):
+        cantidad += cantidad*0.03
+        return super().DevolverSaldoDolares(cantidad)
+
+
 
 class TipoID(Enum):
     DNI = 1
