@@ -1,4 +1,5 @@
 
+from email.policy import default
 import numpy as np
 import datetime as dt
 from Clases import *
@@ -24,11 +25,73 @@ def MenuPrincipal():
    4-Salir\n")
 
    opcion = int(input())
+   while opcion < 5:
+       if opcion == 1:
+           MenuCliente()
+           break
+       elif opcion == 2:
+           MenuTarjeta()
+           break
+       elif opcion == 3:
+           pass
+       elif opcion == 4:
+           quit()
+   else:
+        MenuPrincipal()
 
-   #while opcion < 4:
+def MenuCliente():
+    print("Por favor elija un item del menu:\n\
+        1-Crear Usuario\n\
+        2-Modificar Usuario\n\
+        3-Eliminar Usuario\n\
+        4-Salir\n")
+    menu1= int(input())
+    while menu1 < 5:
+        if menu1 == 1:
+            CrearUsuario()
+            break
+        if menu1 == 2:
+            ModificarUsuario()
+            break
+        if menu1 == 3:
+            EliminarUsuario()
+            break
+        if menu1 == 4:
+            MenuPrincipal()
+            break
+        print("Por favor elija un item del menu:\n\
+        1-Crear Usuario\n\
+        2-Modificar Usuario\n\
+        3-Eliminar Usuario\n\
+        4-Salir\n")
+    else:
+        MenuCliente()
 
-
-
+def MenuTarjeta():
+    print("Por favor elija un item del menu:\n\
+        1-Asignar Tarjeta\n\
+        2-Modificar Saldo\n\
+        3-Eliminar tarjeta\n\
+        4-Salir\n")
+    menu2= int(input())
+    while menu2 <5:
+        if menu2 == 1:
+            CrearTarjeta()
+            break
+        if menu2 == 2:
+            ModificarLimite()
+            break
+        if menu2 == 3:
+            EliminarTarjeta()
+            break
+        if menu2 == 4:
+            MenuPrincipal()
+            break
+    else:
+        MenuTarjeta()
+        
+def Operaciones():
+    pass
 def CrearUsuario():
     print("Elija Tipo Documento:\n\
     1-DNI\n\
@@ -46,14 +109,14 @@ def CrearUsuario():
         if ValidarID(nuevo.numero):
             ListaUsuarios.append(nuevo)
             print (f"{nuevo} se ha agregado al sistema")
-            MenuPrincipal()
+            MenuCliente()
         else:
             print("El usuario ya existe.")
             CrearUsuario()
     else:
         ListaUsuarios.append(nuevo)
         print (f"{nuevo} se ha agregado al sistema\n")
-        MenuPrincipal()
+        MenuCliente()
 
 
 def ValidarID(numero):
@@ -144,12 +207,5 @@ def EliminarTarjeta(numero):
             if tarjeta.AcumuladoPesos == 0 & tarjeta.AcumuladoDolares == 0:
                 ListaTarjetas.pop(ListaTarjetas.index(tarjeta))
 
-nuevatarjeta = CrearTarjeta(ListaUsuarios[0])
-ListaTarjetas.append(nuevatarjeta)
 
-print(ListaTarjetas[0].limitePesos)
-ModificarLimite(ListaTarjetas[0].numero)
-print(ListaTarjetas[0].limitePesos)
-EliminarTarjeta(ListaTarjetas[0].numero)
-for x in ListaUsuarios:
-    print(x)
+MenuPrincipal()
