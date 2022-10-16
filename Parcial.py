@@ -23,8 +23,11 @@ def MenuPrincipal():
    2-Tarjetas\n\
    3-Operaciones\n\
    4-Salir\n")
+   try:
+    opcion = int(input())
+   except ValueError:
+       MenuPrincipal()
 
-   opcion = int(input())
    while opcion < 5:
        if opcion == 1:
            MenuCliente()
@@ -45,7 +48,10 @@ def MenuCliente():
         2-Modificar Usuario\n\
         3-Eliminar Usuario\n\
         4-Salir\n")
-    menu1= int(input())
+    try:
+        menu1= int(input())
+    except ValueError:
+            MenuCliente()
     while menu1 < 5:
         if menu1 == 1:
             CrearUsuario()
@@ -73,7 +79,10 @@ def MenuTarjeta():
         2-Modificar Saldo\n\
         3-Eliminar tarjeta\n\
         4-Salir\n")
-    menu2= int(input())
+    try:
+        menu2= int(input())
+    except ValueError:
+            MenuTarjeta()
     while menu2 <5:
         if menu2 == 1:
             CrearTarjeta()
