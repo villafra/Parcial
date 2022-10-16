@@ -84,62 +84,10 @@ def MenuTarjeta():
             MenuTarjeta()
     while menu2 <5:
         if menu2 == 1:
-            print("Buscar usuario por: (elija la opcion correcta)")
-            print("1-Apellido")
-            print("2-Nro Documento")
-            try:
-                respuesta = int(input())
-                if respuesta == 1:
-                    usuarios = BuscarUsuarioxNombre()
-                    if type(usuarios) != str:
-                        for usuario in usuarios:
-                            print(f"{usuario}, {usuario.tipo}:{usuario.numero}")
-                            usuario = BuscarUsuarioDNI()
-                            if type(usuario) != str:
-                                print(f"Se le va a asignar una tarjeta a {usuario}")
-                                print("Desea continuar?")
-                                print("1-Si")
-                                print("2-No")
-                            try:
-                                opcion = int(input())
-                                if opcion == 1:
-                                    CrearTarjeta(usuario)
-                                else:
-                                    MenuTarjeta()
-                            except:
-                                print("Debe elegir 1 o 2\n")
-                                MenuTarjeta()
-                    else:
-                        print(usuarios)
-                        MenuTarjeta()
-                elif respuesta == 2:
-                    usuario = BuscarUsuarioDNI()
-                    if type(usuario) != str:
-                        print(f"Se le va a asignar una tarjeta a {usuario}")
-                        print("Desea continuar?")
-                        print("1-Si")
-                        print("2-No")
-                        try:
-                            opcion = int(input())
-                            if opcion == 1:
-                                CrearTarjeta(usuario)
-                            else:
-                                MenuTarjeta()
-                        except:
-                            print("Debe elegir 1 o 2\n")
-                            MenuTarjeta()
-                    else:
-                        print(usuario)
-                        MenuTarjeta()
-                else:
-                    print("Debe elegir 1 o 2\n")
-                    MenuTarjeta()
-            except:
-                print("Debe elegir 1 o 2\n")
-                MenuTarjeta()
+            AsignarTarjeta()
             break
         if menu2 == 2:
-            ModificarLimite()
+            BuscarTitular()
             break
         if menu2 == 3:
             EliminarTarjeta()
@@ -185,7 +133,6 @@ def CrearUsuario():
         ListaUsuarios.append(nuevo)
         print (f"{nuevo} se ha agregado al sistema\n")
         MenuCliente()
-
 
 def ValidarID(numero):
     sino = True
@@ -326,6 +273,7 @@ def EliminarUsuario():
             ListaUsuarios.pop(indice)
             print(f"El usuario {aux} ha sido eliminado de la base de datos.")
             MenuCliente()
+
 def BuscarTarjeta(usuario):
     tarjetasxpersonas = []
     for tarjeta in ListaTarjetas:
@@ -347,15 +295,18 @@ def ValidarNumero(numero):
 
 def BuscarUsuarioDNI():
     print(f"Ingrese numero de documento:")
+    usuarioencontrado = 0
     try:
        numero = int(input())
     except :
        print(f"Ingrese documento sin puntos ni comas\n")
     for usuario in ListaUsuarios:
         if usuario.numero == numero:
-            return usuario
-        else:
-            return "No se ha encontrado el usuario"
+            usuarioencontrado = usuario
+    if type(usuarioencontrado) != int:
+        return usuarioencontrado
+    else:
+        return "No se ha encontrado el usuario"
 
 def BuscarUsuarioxNombre():
     usuarios = []
@@ -368,6 +319,72 @@ def BuscarUsuarioxNombre():
         return usuarios
     else:
         return "No se ha encontrado usuario con ese apellido."
+
+def AsignarTarjeta():
+    print("Buscar usuario por: (elija la opcion correcta)")
+    print("1-Apellido")
+    print("2-Nro Documento")
+    try:
+        respuesta = int(input())
+        if respuesta == 1:
+            usuarios = BuscarUsuarioxNombre()
+            if type(usuarios) != str:
+                  for usuario in usuarios:
+                      print(f"{usuario}, {usuario.tipo}:{usuario.numero}")
+                  usuario = BuscarUsuarioDNI()
+                  if type(usuario) != str:
+                      print(f"Se le va a asignar una tarjeta a {usuario}")
+                      print("Desea continuar?")
+                      print("1-Si")
+                      print("2-No")
+                      try:
+                         opcion = int(input())
+                         if opcion == 1:
+                                nuevatarjeta = CrearTarjeta(usuario)
+                                ListaTarjetas.append(nuevatarjeta)
+                                print(f"La tarjeta {nuevatarjeta} Nro: {nuevatarjeta.numero}")
+                                print(f"Ha sido asignada a {usuario}")
+                                MenuTarjeta()
+                         else:
+                             MenuTarjeta()
+                      except:
+                             print("Debe elegir 1 o 2\n")
+                             MenuTarjeta()
+                  else:
+                        print(usuarios)
+                        MenuTarjeta()
+            else:
+                  print(usuarios)
+                  MenuTarjeta()
+        elif respuesta == 2:
+                  usuario = BuscarUsuarioDNI()
+                  if type(usuario) != str:
+                        print(f"Se le va a asignar una tarjeta a {usuario}")
+                        print("Desea continuar?")
+                        print("1-Si")
+                        print("2-No")
+                        try:
+                            opcion = int(input())
+                            if opcion == 1:
+                                nuevatarjeta = CrearTarjeta(usuario)
+                                ListaTarjetas.append(nuevatarjeta)
+                                print(f"La tarjeta {nuevatarjeta} Nro: {nuevatarjeta.numero}")
+                                print(f"Ha sido asignada a {usuario}")
+                                MenuTarjeta()
+                            else:
+                                MenuTarjeta()
+                        except:
+                            print("Debe elegir 1 o 2\n")
+                            MenuTarjeta()
+                  else:
+                        print(usuario)
+                        MenuTarjeta()
+        else:
+                print("Debe elegir 1 o 2\n")
+                MenuTarjeta()
+    except:
+        print("Debe elegir 1 o 2\n")
+        MenuTarjeta()
 
 def CrearTarjeta(usuario):
     aux = usuario
@@ -391,6 +408,76 @@ def CrearTarjeta(usuario):
         tarjeta.Setnumero(ValidarNumero(GenerarNumero()))
     return tarjeta
 
+def BuscarTitular():
+    print("Buscar usuario por: (elija la opcion correcta)")
+    print("1-Apellido")
+    print("2-Nro Documento")
+    try:
+        respuesta = int(input())
+        if respuesta == 1:
+            usuarios = BuscarUsuarioxNombre()
+            if type(usuarios) != str:
+                  for usuario in usuarios:
+                      print(f"{usuario}, {usuario.tipo}:{usuario.numero}")
+                  usuario = BuscarUsuarioDNI()
+                  if type(usuario) != str:
+                      modtarjeta = BuscarTarjeta(usuario)
+                      x = 1
+                      print("Elija una opcion de tarjeta de la lista:")
+                      for tarjeta in modtarjeta:
+                          print(f"{x}-{tarjeta} Nro:{tarjeta.numero}")
+                          x += 1
+                      try: 
+                          ind = int(input())
+                          ModificarLimite(modtarjeta[ind-1].numero)
+                          print(f"La tarjeta {ListaTarjetas[ind-1]} Nro: {ListaTarjetas[ind-1].numero}")
+                          print(f"Tiene ${ListaTarjetas[ind-1].limitePesos} de limite en Pesos")
+                          print(f"y tiene ${ListaTarjetas[ind-1].limiteDolares} de limite en dolares")
+                          MenuTarjeta()
+                      except:
+                          print(f"Solo puede elegir entre {x} opciones")
+                  else:
+                    MenuTarjeta()
+            else:
+                print(usuarios)
+                MenuTarjeta()
+        elif respuesta == 2:
+                  usuario = BuscarUsuarioDNI()
+                  if type(usuario) != str:
+                      modtarjeta = BuscarTarjeta(usuario)
+                      x = 1
+                      print("Elija una opcion de tarjeta de la lista:")
+                      for tarjeta in modtarjeta:
+                          print(f"{x}-{tarjeta} Nro:{tarjeta.numero}")
+                          x += 1
+                      try: 
+                          ind = int(input())
+                          ModificarLimite(modtarjeta[ind-1].numero)
+                          print(f"La tarjeta {ListaTarjetas[ind-1]} Nro: {ListaTarjetas[ind-1].numero}")
+                          print(f"Tiene ${ListaTarjetas[ind-1].limitePesos} de limite en Pesos")
+                          print(f"y tiene ${ListaTarjetas[ind-1].limiteDolares} de limite en dolares")
+                          MenuTarjeta()
+                      except:
+                          print(f"Solo puede elegir entre {x} opciones")
+                  else:
+                        print(usuario)
+                        MenuTarjeta()
+        else:
+                print("Debe elegir 1 o 2\n")
+                MenuTarjeta()
+    except:
+        print("Debe elegir 1 o 2\n")
+        MenuTarjeta()
+
+def BuscarTarjeta(usuario):
+    tarjetas =[]
+    for tarjeta in ListaTarjetas:
+        if tarjeta.titular.numero == usuario.numero:
+            tarjetas.append(tarjeta)
+    if tarjetas:
+        return tarjetas
+    else:
+        return "El usuario no posee tarjetas activas."
 
 def ModificarLimite(numero):
     print("Ingrese Nuevo Limite de Pesos:")

@@ -37,6 +37,8 @@ class Tarjeta:
             self.limitePesos = cantidadpesos
         if cantidaddolares != 0:
             self.limiteDolares = cantidaddolares
+    def __str__(self):
+        return f"{self.__class__.__name__}" 
 
     numero = 0
     AcumuladoPesos = 0
