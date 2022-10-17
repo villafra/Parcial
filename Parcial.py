@@ -104,12 +104,14 @@ def Operaciones():
 1-Listado de Clientes\n\
 2-Listado de Tarjetas\n\
 3-Pago de Tarjetas\n\
-4-Salir\n")
+4-Consumo de Tarjetas\n\
+5-Deuda Total de cliente\n\
+6-Salir\n")
     try:
         menu3= int(input())
     except ValueError:
             Operaciones()
-    while menu3 <5:
+    while menu3 < 7:
         if menu3 == 1:
             ListarClientes()
             print("\n")
@@ -124,6 +126,12 @@ def Operaciones():
             PagarTarjetas()
             break
         if menu3 == 4:
+            break;
+        if menu3 == 5:
+            BuscarMoroso()
+            Operaciones()
+            break
+        if menu3 == 6:
             MenuPrincipal()
             break
     else:
@@ -571,8 +579,10 @@ def ListarClientes():
     if ListaUsuarios:
         for clientes in ListaUsuarios:
             print(f"Nombre Y Apellido: {clientes}, {clientes.tipo}: {clientes.numero}")
+            return True
     else:
         print("La lista de Clientes esta vacia de momento.")
+        return False
 
 def ListarTarjetas():
     if ListaTarjetas:
@@ -669,10 +679,74 @@ def PagarTarjetas():
             else:
                 PagarTarjetas()
         if menu4 == 2:
-            pass
+            if ListarClientes():
+                try:
+                  usuario = BuscarUsuarioDNI()
+                  if type(usuario) != str:
+                      modtarjeta = BuscarTarjeta(usuario)
+                      x = 1
+                      print("Elija una opcion de tarjeta de la lista:")
+                      for tarjeta in modtarjeta:
+                          print(f"{x}-{tarjeta} Nro:{tarjeta.numero}")
+                          x += 1
+                      ind = int(input())
+                      print("Elija Saldo a Pagar?")
+                      print("1-Deuda en Pesos")
+                      print("2-Deuda en Dolares")
+                      print("3-Salir")
+                      try:
+                            opcion = int(input())
+                            while opcion < 4:
+                                if opcion == 1:
+                                    print("Ingrese Cantidad en Pesos:")
+                                    cantidad = float(input())
+                                    ListaTarjetas[ind-1].PagarSaldoPeso(cantidad)
+                                    if OperarTarjeta(tarjeta):
+                                        print("El pago se ha efectuado correctamente.")
+                                    else:
+                                        print("No ha podido realizarse el pago, intente nuevamente.")
+                                    Operaciones()
+                                    break
+                                if opcion == 2:
+                                    print("Ingrese Cantidad de Dolares:")
+                                    cantidad = float(input())
+                                    ListaTarjetas[ind-1].PagarSaldoDolar(cantidad)
+                                    if OperarTarjeta(tarjeta):
+                                        print("El pago se ha efectuado correctamente.")
+                                    else:
+                                        print("No ha podido realizarse el pago, intente nuevamente.")
+                                    Operaciones()
+                                    break
+                                if opcion == 3:
+                                    Operaciones()
+                                else:
+                                    PagarTarjetas()
+                      except:
+                          print("Solo puede elegir entre tres opciones.")
+                  else:
+                       print(tarjeta)
+                       PagarTarjetas()
+                except:
+                    print("Solo ingrese numeros, sin espacios ni guiones")
+                    PagarTarjetas()
+                break
         if menu4 == 3:
             Operaciones()
         else:
             PagarTarjetas()
+
+def BuscarMoroso():
+    if ListarClientes():
+        try:
+            Moroso = BuscarUsuarioDNI()
+            if type(Moroso) != str:
+                pesos, dolares = BuscarDeudaTotal(Moroso)
+                print(f"{Moroso} tiene una deuda total de:")
+                print(f"${pesos} en Pesos")
+                print(f"${dolares} en Dolares")
+            else:
+                print(Moroso)
+        except:
+            print("Ingrese el DNI sin espacios, ni comas.")
 
 MenuPrincipal()
