@@ -8,12 +8,6 @@ import random as rnd
 ListaUsuarios = []
 ListaTarjetas = []
 
-persona = Usuario("DNI", 123, "asd", "sad")
-ListaUsuarios.append(persona)
-persona = Usuario("DNI", 122, "assasd", "sad")
-ListaUsuarios.append(persona)
-
-
 
 def MenuPrincipal():
    print ("Banco Monte Dei Paschi")
@@ -126,7 +120,8 @@ def Operaciones():
             PagarTarjetas()
             break
         if menu3 == 4:
-            break;
+            ListarClientes()
+            DeclararConsumo(BuscarUsuarioDNI())
         if menu3 == 5:
             BuscarMoroso()
             Operaciones()
@@ -579,7 +574,7 @@ def ListarClientes():
     if ListaUsuarios:
         for clientes in ListaUsuarios:
             print(f"Nombre Y Apellido: {clientes}, {clientes.tipo}: {clientes.numero}")
-            return True
+        return True
     else:
         print("La lista de Clientes esta vacia de momento.")
         return False
@@ -748,5 +743,73 @@ def BuscarMoroso():
                 print(Moroso)
         except:
             print("Ingrese el DNI sin espacios, ni comas.")
+def DeclararConsumo(usuario):
+     aux = usuario
+     modtarjeta = BuscarTarjeta(usuario)
+     if type(modtarjeta) != str:
+        x = 1
+        print("Elija una opcion de tarjeta de la lista:")
+        for tarjeta in modtarjeta:
+            print(f"{x}-{tarjeta} Nro:{tarjeta.numero}")
+            x += 1
+        try:
+            ind = int(input())
+            operartarjeta = modtarjeta[ind-1]
+            print(f"Declarar Consumo en tarjeta{operartarjeta}")
+            print("Elija moneda de la operacion:")
+            print("1-Pesos")
+            print("2-Dolares")
+            moneda = int(input())
+            if moneda == 1:
+                print("Ingrese cantidad")
+                cantidad = float(input())
+                if operartarjeta.VerificarSaldoPeso(cantidad):
+                    operartarjeta.ComprarPesos(cantidad)
+                    if OperarTarjeta(operartarjeta):
+                        print("La transaccion finalizo correctamente")
+                        Operaciones()
+                    else:
+                        print("No se pudo completar la transaccion, intente nuevamente")
+                        DeclararConsumo(aux)
+                else:
+                    print("Con esta compra superaria el limite de su tarjeta.")
+                    Operaciones()
+            elif moneda == 2:
+                print("Ingrese cantidad")
+                cantidad = float(input())
+                if operartarjeta.VerificarSaldoDolar(cantidad):
+                    operartarjeta.ComprarDolares(cantidad)
+                    if OperarTarjeta(operartarjeta):
+                        print("La transaccion finalizo correctamente")
+                        Operaciones()
+                    else:
+                        print("No se pudo completar la transaccion, intente nuevamente")
+                        DeclararConsumo(aux)
+                else:
+                    print("Con esta compra superaria el limite de su tarjeta.")
+                    Operaciones()
+            else:
+                print("Solo puede elegir entre dos opciones de moneda")
+                DeclararConsumo(aux)
+        except:
+            print("Elija una de las opciones disponibles sin comas ni puntos.")
+            DeclararConsumo(aux)
+     else:
+         print("El cliente seleccionado no posee tarjetas activas. No puede declarar consumos.")
+         Operaciones()
+        
 
+def Hardcodear():
+    
+    persona = Usuario("DNI", 29682301, "Franco", "Villafane")
+    ListaUsuarios.append(persona)
+    nuevatarjeta = CrearTarjeta(persona)
+    ListaTarjetas.append(nuevatarjeta)
+    persona = Usuario("DNI", 11924795, "Amelia", "Gomez")
+    ListaUsuarios.append(persona)
+    persona = Usuario("DNI", 29873848, "Marcos", "Moneta")
+    ListaUsuarios.append(persona)
+    persona = Usuario("DNI", 34989828, "Agostina", "Casella")
+    ListaUsuarios.append(persona)
+Hardcodear()
 MenuPrincipal()

@@ -65,16 +65,24 @@ class Platinum(Tarjeta):
         self.limitePesos = 1000000
         self.limiteDolares = 10000
     def PagarSaldoPeso(self, cantidad):
-        cantidad -= cantidad*0.1
+        if cantidad == self.DevolverSaldoPesos(self.AcumuladoPesos):
+            cantidad -= cantidad - round(self.AcumuladoPesos,0)
+        else:
+            cantidad -= cantidad*0.1
         return super().PagarSaldoPeso(cantidad)
     def PagarSaldoDolar(self, cantidad):
-        cantidad -= cantidad*0.01
+        if cantidad == self.DevolverSaldoDolares(self.AcumuladoDolares):
+            cantidad -= cantidad - round(self.AcumuladoDolares,0)
+        else:
+            cantidad -= cantidad*0.01
         return super().PagarSaldoDolar(cantidad)
     def DevolverSaldoPesos(self, cantidad):
-        cantidad += cantidad*0.1
+        if cantidad > 0:
+            cantidad += cantidad*0.1
         return super().DevolverSaldoPesos(cantidad)
     def DevolverSaldoDolares(self, cantidad):
-        cantidad += cantidad*0.01
+        if cantidad > 0:
+            cantidad += cantidad*0.01
         return super().DevolverSaldoDolares(cantidad)
 
 
@@ -89,16 +97,24 @@ class Gold(Tarjeta):
         self.limitePesos = 750000
         self.limiteDolares = 7500
     def PagarSaldoPeso(self, cantidad):
-        cantidad -= cantidad*0.2
+        if cantidad == self.DevolverSaldoPesos(self.AcumuladoPesos):
+            cantidad -= cantidad - round(self.AcumuladoPesos,0)
+        else:
+            cantidad -= cantidad*0.2
         return super().PagarSaldoPeso(cantidad)
     def PagarSaldoDolar(self, cantidad):
-        cantidad -= cantidad*0.02
+        if cantidad == self.DevolverSaldoDolares(self.AcumuladoDolares):
+            cantidad -= cantidad - round(self.AcumuladoDolares,0)
+        else:
+            cantidad -= cantidad*0.02
         return super().PagarSaldoDolar(cantidad)
     def DevolverSaldoPesos(self, cantidad):
-        cantidad += cantidad*0.2
+        if cantidad > 0:
+            cantidad += cantidad*0.2
         return super().DevolverSaldoPesos(cantidad)
     def DevolverSaldoDolares(self, cantidad):
-        cantidad += cantidad*0.02
+        if cantidad > 0:
+            cantidad += cantidad*0.02
         return super().DevolverSaldoDolares(cantidad)
 
 
@@ -114,16 +130,24 @@ class Plata(Tarjeta):
         self.limitePesos = 500000
         self.limiteDolares = 5000
     def PagarSaldoPeso(self, cantidad):
-        cantidad -= cantidad*0.3
+        if cantidad == self.DevolverSaldoPesos(self.AcumuladoPesos):
+            cantidad -= cantidad - round(self.AcumuladoPesos,0)
+        else:
+            cantidad -= cantidad*0.3
         return super().PagarSaldoPeso(cantidad)
     def PagarSaldoDolar(self, cantidad):
-        cantidad -= cantidad*0.03
+        if cantidad == self.DevolverSaldoDolares(self.AcumuladoDolares):
+            cantidad -= cantidad - round(self.AcumuladoDolares,0)
+        else:
+            cantidad -= cantidad*0.03
         return super().PagarSaldoDolar(cantidad)
     def DevolverSaldoPesos(self, cantidad):
-        cantidad += cantidad*0.3
+        if cantidad > 0:
+            cantidad += cantidad*0.3
         return super().DevolverSaldoPesos(cantidad)
     def DevolverSaldoDolares(self, cantidad):
-        cantidad += cantidad*0.03
+        if cantidad > 0:
+            cantidad += cantidad*0.03
         return super().DevolverSaldoDolares(cantidad)
 
 
