@@ -1,3 +1,4 @@
+import ctypes
 from enum import Enum
 from datetime import timedelta
 
@@ -160,3 +161,9 @@ class TipoTarjeta(Enum):
     Platinum = 1
     Gold = 2
     Plata = 3
+
+class COORD(ctypes.Structure):
+    _fields_ = [("X", ctypes.c_short), ("Y", ctypes.c_short)]
+    def __init__(self,x,y):
+        self.X = x
+        self.Y = y

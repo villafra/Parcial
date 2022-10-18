@@ -1,4 +1,7 @@
-
+from colorama import *
+import shutil
+from ctypes import *
+import sys
 import numpy as np
 import datetime as dt
 from Clases import *
@@ -7,15 +10,30 @@ import random as rnd
 
 ListaUsuarios = []
 ListaTarjetas = []
+col=0
+row=0
+columnas, filas = shutil.get_terminal_size()
 
+def Posicion(col, row):
+    STD_OUTPUT_HANDLE = -11
+    h = windll.kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
+    INIT_POS = COORD(col, row)
+    windll.kernel32.SetConsoleCursorPosition(h, INIT_POS)
 
 def MenuPrincipal():
-   print ("Banco Monte Dei Paschi")
-   print ("Por favor elija un item del menu:\n\
-   1-Clientes\n\
-   2-Tarjetas\n\
-   3-Operaciones\n\
-   4-Salir\n")
+   ListarConsigna()
+   Titulo = "Banco Monte Dei Paschi"
+   col = int((columnas/2)-len(Titulo)/2)
+   fila = sys.stdout.write("\e[6n")
+   
+   print (Cursor.POS(col, fila)+Style.BRIGHT+Fore.RED+Titulo)
+   print (Cursor.POS(col, fila + 1)+"Por favor elija un item del menu:")
+   print (Cursor.POS(col, fila + 2)+"1-Clientes")
+   print (Cursor.POS(col, fila + 3)+"2-Tarjetas")
+   print (Cursor.POS(col, fila + 4)+"3-Operaciones")
+   print (Cursor.POS(col, fila + 5)+"4-Salir")
+   Posicion(col,fila + 6)
+   
    try:
     opcion = int(input())
    except ValueError:
@@ -32,7 +50,7 @@ def MenuPrincipal():
            Operaciones()
            break
        elif opcion == 4:
-           quit()
+           sys.exit()
    else:
         MenuPrincipal()
 
@@ -59,11 +77,7 @@ def MenuCliente():
         if menu1 == 4:
             MenuPrincipal()
             break
-        print("Por favor elija un item del menu:\n\
-        1-Crear Usuario\n\
-        2-Modificar Usuario\n\
-        3-Eliminar Usuario\n\
-        4-Salir\n")
+ 
     else:
         MenuCliente()
 
@@ -99,13 +113,14 @@ def Operaciones():
 2-Listado de Tarjetas\n\
 3-Pago de Tarjetas\n\
 4-Consumo de Tarjetas\n\
-5-Deuda Total de cliente\n\
-6-Salir\n")
+5-Deuda Total de Cliente\n\
+6-Deuda de cliente por Tarjetas\n\
+7-Salir\n")
     try:
         menu3= int(input())
     except ValueError:
             Operaciones()
-    while menu3 < 7:
+    while menu3 < 8:
         if menu3 == 1:
             ListarClientes()
             print("\n")
@@ -127,6 +142,9 @@ def Operaciones():
             Operaciones()
             break
         if menu3 == 6:
+            BuscarMorosoXTarjeta()
+            Operaciones()
+        if menu3 == 7:
             MenuPrincipal()
             break
     else:
@@ -134,21 +152,21 @@ def Operaciones():
 def CrearUsuario():
     print("Elija Tipo Documento:\n\
     1-DNI\n\
-    2-Pasaporte\n")
+    2-Pasaporte")
     try:
         tipo = TipoID(int(input())).name
     except :
         print("Debe elegir 1 o 2\n")
         CrearUsuario()
-    print(f"Ingrese {tipo}:\n")
+    print(f"Ingrese {tipo}:")
     try:
         numero = int(input())
     except:
         print(f"Ingrese {tipo} sin puntos ni comas\n")
         CrearUsuario()
-    print ("Ingrese Nombre:\n")
+    print ("Ingrese Nombre:")
     nombre = str(input())
-    print ("Ingrese Apellido:\n")
+    print ("Ingrese Apellido:")
     apellido = str(input())
 
     nuevo = Usuario(tipo, numero, nombre, apellido)
@@ -357,6 +375,7 @@ def AsignarTarjeta():
     print("2-Nro Documento")
     try:
         respuesta = int(input())
+        ListarClientes()
         if respuesta == 1:
             usuarios = BuscarUsuarioxNombre()
             if type(usuarios) != str:
@@ -526,6 +545,7 @@ def BuscarTarjeta(usuario):
         return tarjetas
     else:
         return "El usuario no posee tarjetas activas."
+
 def EncontrarTarjeta(numero):
     encontrada = "No existe Tarjeta con ese numero"
     for tarjeta in ListaTarjetas:
@@ -593,6 +613,7 @@ def ListarTarjetas():
     else:
         print("No hay tarjetas asignadas de momento.")
         return False
+
 def ListarConsigna():
     for clientes in ListaUsuarios:
         tarjetas = BuscarTarjeta(clientes)
@@ -603,6 +624,7 @@ def ListarConsigna():
                 print(f"{tarjeta.numero}, {tarjeta.fechaotorgacion}, {tarjeta.fechavencimiento}, {tarjeta.AcumuladoPesos}, {tarjeta.AcumuladoDolares}")
         else:
             pass
+
 def OperarTarjeta(tarjeta):
     try:
         for operada in ListaTarjetas:
@@ -630,7 +652,9 @@ def PagarTarjetas():
                     tarjeta = EncontrarTarjeta(numero)
                     if type(tarjeta) != str:
                         pesos, dolares = BuscarDeuda(tarjeta)
-                        print(f"La tarjeta {tarjeta.numero}, debe ${pesos} y u$s {dolares}")
+                        print(f"Tarjeta {tarjeta.numero} de {tarjeta.titular} adeuda:")
+                        print(f"$ {pesos}")
+                        print(f"u$S {dolares}\n")
                         print("Elija Saldo a Pagar?")
                         print("1-Deuda en Pesos")
                         print("2-Deuda en Dolares")
@@ -685,6 +709,10 @@ def PagarTarjetas():
                           print(f"{x}-{tarjeta} Nro:{tarjeta.numero}")
                           x += 1
                       ind = int(input())
+                      pesos, dolares = BuscarDeuda(modtarjeta[ind-1])
+                      print(f"Tarjeta {modtarjeta[ind-1]} de {modtarjeta[ind-1].titular} adeuda:")
+                      print(f"$ {pesos}")
+                      print(f"u$S {dolares}\n")
                       print("Elija Saldo a Pagar?")
                       print("1-Deuda en Pesos")
                       print("2-Deuda en Dolares")
@@ -738,11 +766,33 @@ def BuscarMoroso():
                 pesos, dolares = BuscarDeudaTotal(Moroso)
                 print(f"{Moroso} tiene una deuda total de:")
                 print(f"${pesos} en Pesos")
-                print(f"${dolares} en Dolares")
+                print(f"${dolares} en Dolares\n")
             else:
                 print(Moroso)
         except:
             print("Ingrese el DNI sin espacios, ni comas.")
+
+def BuscarMorosoXTarjeta():
+    if ListarClientes():
+        try:
+            Moroso = BuscarUsuarioDNI()
+            if type(Moroso) != str:
+                if ListaTarjetas:
+                    for tarjeta in ListaTarjetas:
+                        if tarjeta.titular.numero == Moroso.numero:
+                            pesos, dolares = BuscarDeuda(tarjeta)
+                            print(f"Tarjeta {tarjeta} a nombre de {Moroso} tiene una deuda total de:")
+                            print(f"${pesos} en Pesos")
+                            print(f"${dolares} en Dolares\n")
+                        else:
+                            print("El usuario no posee tarjeta activas.\n")
+                else:
+                    print("No hay tarjetas asociadas a ningun cliente.\n")
+            else:
+                print(Moroso)
+        except:
+            print("Ingrese el DNI sin espacios, ni comas.")
+
 def DeclararConsumo(usuario):
      aux = usuario
      modtarjeta = BuscarTarjeta(usuario)
@@ -803,8 +853,6 @@ def Hardcodear():
     
     persona = Usuario("DNI", 29682301, "Franco", "Villafane")
     ListaUsuarios.append(persona)
-    nuevatarjeta = CrearTarjeta(persona)
-    ListaTarjetas.append(nuevatarjeta)
     persona = Usuario("DNI", 11924795, "Amelia", "Gomez")
     ListaUsuarios.append(persona)
     persona = Usuario("DNI", 29873848, "Marcos", "Moneta")
