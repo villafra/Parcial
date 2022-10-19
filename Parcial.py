@@ -1,38 +1,20 @@
-from colorama import *
-import shutil
-from ctypes import *
-import sys
-import numpy as np
 import datetime as dt
 from Clases import *
 import random as rnd
+import re
 
 
 ListaUsuarios = []
 ListaTarjetas = []
-col=0
-row=0
-columnas, filas = shutil.get_terminal_size()
-
-def Posicion(col, row):
-    STD_OUTPUT_HANDLE = -11
-    h = windll.kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
-    INIT_POS = COORD(col, row)
-    windll.kernel32.SetConsoleCursorPosition(h, INIT_POS)
 
 def MenuPrincipal():
    ListarConsigna()
-   Titulo = "Banco Monte Dei Paschi"
-   col = int((columnas/2)-len(Titulo)/2)
-   fila = sys.stdout.write("\e[6n")
-   
-   print (Cursor.POS(col, fila)+Style.BRIGHT+Fore.RED+Titulo)
-   print (Cursor.POS(col, fila + 1)+"Por favor elija un item del menu:")
-   print (Cursor.POS(col, fila + 2)+"1-Clientes")
-   print (Cursor.POS(col, fila + 3)+"2-Tarjetas")
-   print (Cursor.POS(col, fila + 4)+"3-Operaciones")
-   print (Cursor.POS(col, fila + 5)+"4-Salir")
-   Posicion(col,fila + 6)
+   print ("\nBanco Monte Dei Paschi")
+   print ("Por favor elija un item del menu:")
+   print ("1-Clientes")
+   print ("2-Tarjetas")
+   print ("3-Operaciones")
+   print ("4-Salir")
    
    try:
     opcion = int(input())
@@ -50,16 +32,16 @@ def MenuPrincipal():
            Operaciones()
            break
        elif opcion == 4:
-           sys.exit()
+           quit()
    else:
         MenuPrincipal()
 
 def MenuCliente():
-    print("Por favor elija un item del menu:\n\
-        1-Crear Usuario\n\
-        2-Modificar Usuario\n\
-        3-Eliminar Usuario\n\
-        4-Salir\n")
+    print("Por favor elija un item del menu:")
+    print("1-Crear Usuario")
+    print("2-Modificar Usuario")
+    print("3-Eliminar Usuario")
+    print("4-Salir")
     try:
         menu1= int(input())
     except ValueError:
@@ -82,11 +64,11 @@ def MenuCliente():
         MenuCliente()
 
 def MenuTarjeta():
-    print("Por favor elija un item del menu:\n\
-        1-Asignar Tarjeta\n\
-        2-Modificar Saldo\n\
-        3-Eliminar tarjeta\n\
-        4-Salir\n")
+    print("Por favor elija un item del menu:")
+    print("1-Asignar Tarjeta")
+    print("2-Modificar Saldo")
+    print("3-Eliminar tarjeta")
+    print("4-Salir")
     try:
         menu2= int(input())
     except ValueError:
@@ -108,14 +90,14 @@ def MenuTarjeta():
         MenuTarjeta()
         
 def Operaciones():
-    print("Por favor elija un item del menu:\n\
-1-Listado de Clientes\n\
-2-Listado de Tarjetas\n\
-3-Pago de Tarjetas\n\
-4-Consumo de Tarjetas\n\
-5-Deuda Total de Cliente\n\
-6-Deuda de cliente por Tarjetas\n\
-7-Salir\n")
+    print("Por favor elija un item del menu:")
+    print("1-Listado de Clientes")
+    print("2-Listado de Tarjetas")
+    print("3-Pago de Tarjetas")
+    print("4-Consumo de Tarjetas")
+    print("5-Deuda Total de Cliente")
+    print("6-Deuda de cliente por Tarjetas")
+    print("7-Salir")
     try:
         menu3= int(input())
     except ValueError:
@@ -150,9 +132,9 @@ def Operaciones():
     else:
        Operaciones()
 def CrearUsuario():
-    print("Elija Tipo Documento:\n\
-    1-DNI\n\
-    2-Pasaporte")
+    print("Elija Tipo Documento:")
+    print("1-DNI")
+    print("2-Pasaporte")
     try:
         tipo = TipoID(int(input())).name
     except :
@@ -160,7 +142,12 @@ def CrearUsuario():
         CrearUsuario()
     print(f"Ingrese {tipo}:")
     try:
-        numero = int(input())
+        numero = str(input())
+        if ValidarDNI(tipo, numero):
+            pass
+        else:
+            print(f"Ingrese {tipo} sin puntos ni comas\n")
+            CrearUsuario()
     except:
         print(f"Ingrese {tipo} sin puntos ni comas\n")
         CrearUsuario()
@@ -168,8 +155,10 @@ def CrearUsuario():
     nombre = str(input())
     print ("Ingrese Apellido:")
     apellido = str(input())
-
-    nuevo = Usuario(tipo, numero, nombre, apellido)
+    if tipo == TipoID.Pasaporte.name:
+        nuevo = Usuario(tipo, numero, nombre, apellido)
+    else:
+        nuevo = Usuario(tipo, int(numero), nombre, apellido)
     if ListaUsuarios:
         if ValidarID(nuevo.numero):
             ListaUsuarios.append(nuevo)
@@ -212,9 +201,9 @@ def ModificarUsuario():
         try:
             respuesta = int(input())
             if respuesta == 1:
-                print("Elija nuevo tipo documento:\n\
-                    1-DNI\n\
-                    2-Pasaporte\n")
+                print("Elija nuevo tipo documento:")
+                print("1-DNI")
+                print("2-Pasaporte")
                 try:
                     tipo = TipoID(int(input())).name
                 except :
@@ -299,19 +288,20 @@ def EliminarUsuario():
     acumuladopesos = 0
     acumuladodolares = 0
     tarjetas = []
+    ListarClientes()
     print("Ingrese Numero de documento de usuario a eliminar:")
     numero = int(input())
     if not ValidarID(numero):
         indice = BuscarIndex(numero)
         aux = ListaUsuarios[indice]
         tarjetas = BuscarTarjeta(aux)
-        if tarjetas:
+        if type(tarjetas) != str:
             for tarjeta in tarjetas:
                 if tarjeta.AcumuladoPesos > 0:
                     acumuladopesos += tarjeta.AcumuladoPesos
                 if tarjeta.AcumuladoDolares >0:
                     acumuladodolares += tarjeta.AcumuladoDolares
-            if acumuladopesos <= 0 & acumuladodolares <= 0:
+            if acumuladopesos <= 0 and acumuladodolares <= 0:
                 ListaUsuarios.pop(indice)
                 print(f"El usuario {aux} ha sido eliminado de la base de datos.")
                 MenuCliente()
@@ -346,7 +336,12 @@ def BuscarUsuarioDNI():
     print(f"Ingrese numero de documento:")
     usuarioencontrado = 0
     try:
-       numero = int(input())
+        numero = str(input())
+        if re.fullmatch(r"[0-9]{8}",numero):
+            numero = int(numero)
+        elif not re.fullmatch(r"[a-zA-Z]{3}[0-9]{6}", numero):
+            print("Ingrese el documento en el formato correcto")
+            BuscarUsuarioDNI()
     except :
        print(f"Ingrese documento sin puntos ni comas\n")
     for usuario in ListaUsuarios:
@@ -438,10 +433,10 @@ def AsignarTarjeta():
 
 def CrearTarjeta(usuario):
     aux = usuario
-    print("Elija Nivel Tarjeta:\n\
-         1-Platinum\n\
-         2-Gold\n\
-         3-Plata\n")
+    print("Elija Nivel Tarjeta:")
+    print("1-Platinum")
+    print("2-Gold")
+    print("3-Plata")
     try:
         tipo = TipoTarjeta(int(input()))
     except :
@@ -500,6 +495,7 @@ def BuscarTitular(opcion = 1):
                 print(usuarios)
                 MenuTarjeta()
         elif respuesta == 2:
+                  ListarClientes()
                   usuario = BuscarUsuarioDNI()
                   if type(usuario) != str:
                       modtarjeta = BuscarTarjeta(usuario)
@@ -554,20 +550,22 @@ def EncontrarTarjeta(numero):
     return encontrada
 
 def ModificarLimite(numero):
-    print("Ingrese Nuevo Limite de Pesos:")
-    print("(0 para no modificar)")
-    pesos = float(input())
-    print("Ingrese Nuevo Limite de Dolares:")
-    print("(0 para no modificar)")
-    dolares = float(input())
     for tarjeta in ListaTarjetas:
         if tarjeta.numero == numero:
-            tarjeta.ModificarLimite(pesos, dolares)
+                print(f"Limite en Pesos: ${tarjeta.limitePesos}")
+                print("Ingrese Nuevo Limite de Pesos:")
+                print("(0 para no modificar)")
+                pesos = float(input())
+                print(f"Limite en Dolares: ${tarjeta.limiteDolares}")
+                print("Ingrese Nuevo Limite de Dolares:")
+                print("(0 para no modificar)")
+                dolares = float(input())
+                tarjeta.ModificarLimite(pesos, dolares)
 
 def EliminarTarjeta(numero):
     for tarjeta in ListaTarjetas:
         if tarjeta.numero == numero:
-            if tarjeta.AcumuladoPesos == 0 & tarjeta.AcumuladoDolares == 0:
+            if tarjeta.AcumuladoPesos == 0 and tarjeta.AcumuladoDolares == 0:
                 ListaTarjetas.pop(ListaTarjetas.index(tarjeta))
             else:
                 return False
@@ -618,10 +616,14 @@ def ListarConsigna():
     for clientes in ListaUsuarios:
         tarjetas = BuscarTarjeta(clientes)
         if type(tarjetas) != str:
-            print(f"Nombre Y Apellido: {clientes}, {clientes.tipo}: {clientes.numero}")
+            print("+----------------------------------+----------------------------------------+")
+            print(f"|Nombre Y Apellido: {clientes}       | {clientes.tipo}: {clientes.numero}  |")
+            print("+----------------------------------+----------------------------------------+")
             for tarjeta in tarjetas:
-                print("Numero, Fecha de Otorgacion, Fecha de Vencimiento, Tipo, Saldo $, Saldo U$S")
-                print(f"{tarjeta.numero}, {tarjeta.fechaotorgacion}, {tarjeta.fechavencimiento}, {tarjeta.AcumuladoPesos}, {tarjeta.AcumuladoDolares}")
+                print("+------------------------------------------------------+------------------------------------------------------------+")
+                print("Numero               | Fecha de Otorgacion        | Fecha de Vencimiento     | Tipo      | Saldo $       | Saldo U$S ")
+                print(f"{tarjeta.numero}         {tarjeta.fechaotorgacion}                  {tarjeta.fechavencimiento}                {tarjeta}              {tarjeta.AcumuladoPesos}             {tarjeta.AcumuladoDolares}")
+                print("+------------------------------------------------------+------------------------------------------------------------+")
         else:
             pass
 
@@ -636,10 +638,10 @@ def OperarTarjeta(tarjeta):
         return False
 
 def PagarTarjetas():
-    print("Por favor elija un item del menu:\n\
-1-Buscar por Nro de Tarjeta\n\
-2-Buscar por Usuario\n\
-3-Salir\n")
+    print("Por favor elija un item del menu:")
+    print("1-Buscar por Nro de Tarjeta")
+    print("2-Buscar por Usuario")
+    print("3-Salir")
     try:
         menu4= int(input())
     except ValueError:
@@ -848,6 +850,19 @@ def DeclararConsumo(usuario):
          print("El cliente seleccionado no posee tarjetas activas. No puede declarar consumos.")
          Operaciones()
         
+def ValidarDNI(tipo, numero):
+    
+    if tipo == TipoID.Pasaporte.name:
+        validacion = re.compile(r"[a-zA-z]{3}[0-9]{6}")
+    elif tipo == TipoID.DNI.name:
+        validacion = re.compile(r"[0-9]{8}")
+    else:
+        return False
+
+    if re.fullmatch(validacion, str(numero)):
+        return True
+    else:
+        return False
 
 def Hardcodear():
     
