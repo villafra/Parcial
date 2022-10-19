@@ -186,11 +186,18 @@ def BuscarIndex(numero):
     return indice
 
 def ModificarUsuario():
+    ListarClientes()
     print("Ingrese Numero de documento de usuario a modificar:")
     try:
-        numero = int(input())
+        numero = str(input())
+        if re.fullmatch(r"[0-9]{8}",numero):
+            numero = int(numero)
+        elif not re.fullmatch(r"[a-zA-Z]{3}[0-9]{6}", numero):
+            print("Ingrese el documento en el formato correcto")
+            ModificarUsuario()
     except:
-        print(f"Ingrese documento sin puntos ni comas\n")    
+        print(f"Ingrese documento sin puntos ni comas\n") 
+        ModificarUsuario()
     if not ValidarID(numero):
         indice = BuscarIndex(numero)
         aux = ListaUsuarios[indice]
@@ -290,7 +297,16 @@ def EliminarUsuario():
     tarjetas = []
     ListarClientes()
     print("Ingrese Numero de documento de usuario a eliminar:")
-    numero = int(input())
+    try:
+        numero = str(input())
+        if re.fullmatch(r"[0-9]{8}",numero):
+            numero = int(numero)
+        elif not re.fullmatch(r"[a-zA-Z]{3}[0-9]{6}", numero):
+            print("Ingrese el documento en el formato correcto")
+            EliminarUsuario()
+    except:
+        print("Ingrese el documento en el formato correcto")
+        EliminarUsuario()
     if not ValidarID(numero):
         indice = BuscarIndex(numero)
         aux = ListaUsuarios[indice]
